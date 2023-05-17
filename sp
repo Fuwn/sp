@@ -49,7 +49,7 @@
 # CONSTANTS
 
 SP_VERSION="0.1"
-SP_DEST="org.mpris.MediaPlayer2.spotify"
+SP_DEST=$(busctl --user| grep org.mpris.MediaPlayer2.spotifyd | awk '{print $1}')
 SP_PATH="/org/mpris/MediaPlayer2"
 SP_MEMB="org.mpris.MediaPlayer2.Player"
 
@@ -304,14 +304,14 @@ alias sp-prev="  sp-dbus Previous"
 # when running locally, but is crucial when we don't have an X display handy
 # (for instance, when running sp over ssh.)
 
-SPOTIFY_PID="$(pidof -s spotify)"
+SPOTIFYD_PID="$(pidof -s spotifyd)"
 
-if [[ -z "$SPOTIFY_PID" ]]; then
-  echo "Error: Spotify is not running."
+if [[ -z "$SPOTIFYD_PID" ]]; then
+  echo "Error: Spotifyd is not running."
   exit 1
 fi
 
-QUERY_ENVIRON="$(cat /proc/${SPOTIFY_PID}/environ | tr '\0' '\n' | grep "DBUS_SESSION_BUS_ADDRESS" | cut -d "=" -f 2-)"
+QUERY_ENVIRON="$(cat /proc/${SPOTIFYD_PID}/environ | tr '\0' '\n' | grep "DBUS_SESSION_BUS_ADDRESS" | cut -d "=" -f 2-)"
 if [[ "${QUERY_ENVIRON}" != "" ]]; then
   export DBUS_SESSION_BUS_ADDRESS="${QUERY_ENVIRON}"
 fi
