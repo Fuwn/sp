@@ -49,7 +49,8 @@
 # CONSTANTS
 
 SP_VERSION="0.1"
-SP_DEST=$(busctl --user| grep org.mpris.MediaPlayer2.spotifyd | awk '{print $1}')
+SPOTIFYD_PID="$(pidof -s spotifyd)"
+SP_DEST=$(busctl --user| grep org.mpris.MediaPlayer2.spotifyd | grep "$SPOTIFYD_PID" | awk '{print $1}')
 SP_PATH="/org/mpris/MediaPlayer2"
 SP_MEMB="org.mpris.MediaPlayer2.Player"
 
@@ -303,8 +304,6 @@ alias sp-prev="  sp-dbus Previous"
 # First, we connect to the dbus session spotify is on. This isn't really needed
 # when running locally, but is crucial when we don't have an X display handy
 # (for instance, when running sp over ssh.)
-
-SPOTIFYD_PID="$(pidof -s spotifyd)"
 
 if [[ -z "$SPOTIFYD_PID" ]]; then
   echo "Error: Spotifyd is not running."
